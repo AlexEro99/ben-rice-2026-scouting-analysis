@@ -6,6 +6,11 @@ This project uses MLB Statcast pitch-level data to analyze Ben Rice's swing-and-
 
 The objective is to translate baseball data into actionable insights that could support advance scouting and pitcher game planning.
 
+## Scouting Visualization
+
+![Ben Rice 2026 In-Zone Whiff Rate](outputs/ben_rice_whiff_heatmap.png)
+
+
 ## Tools & Technologies
 
 - **Python:** pybaseball, pandas, NumPy, Matplotlib
@@ -60,11 +65,11 @@ Python and Matplotlib were used to create the visualizations.
 
 ## Project Deliverables
 
-- One-page advance scouting report (PDF)
-- In-zone whiff-rate heatmap
-- Strike-zone performance comparison chart
-- PostgreSQL analysis queries
-- Python data collection and visualization scripts
+- [Advance Scouting Report (PDF)](reports/Ben_Rice_2026_Advance_Scouting_Report.pdf)
+- [In-Zone Whiff Heatmap](outputs/ben_rice_whiff_heatmap.png)
+- [Strike-Zone Comparison](outputs/ben_rice_zone_comparison.png)
+- [Pitch Types Faced](outputs/ben_rice_pitch_types.png)
+- [SQL Analysis](sql/Ben_Rice_Analysis.sql)
 
 ## Limitations
 
