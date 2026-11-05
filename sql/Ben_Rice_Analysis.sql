@@ -176,6 +176,8 @@ SELECT
 
 FROM ben_rice_pitches
 
+WHERE p_throws IN ('L', 'R')
+
 GROUP BY p_throws
 
 ORDER BY whiff_rate_pct DESC NULLS LAST;
@@ -235,6 +237,8 @@ SELECT
 
 FROM ben_rice_pitches
 
+WHERE p_throws IN ('L', 'R')
+
 GROUP BY p_throws, pitch_name
 
 ORDER BY pitcher_hand, whiff_rate_pct DESC NULLS LAST;
@@ -261,13 +265,14 @@ WITH pitch_locations AS (
                 THEN 'High'
         END AS vertical_zone,
 
+
         CASE
             WHEN plate_x >= -0.85 AND plate_x < -0.85 / 3.0
-                THEN 'Left'
+                THEN 'Right'
             WHEN plate_x >= -0.85 / 3.0 AND plate_x < 0.85 / 3.0
                 THEN 'Middle'
             WHEN plate_x >= 0.85 / 3.0 AND plate_x <= 0.85
-                THEN 'Right'
+                THEN 'Left'
         END AS horizontal_zone
 
     FROM ben_rice_pitches
@@ -352,8 +357,8 @@ WITH pitch_locations AS (
         CASE
             WHEN plate_z < sz_bot THEN 'Below Zone'
             WHEN plate_z > sz_top THEN 'Above Zone'
-            WHEN plate_x < -0.85 THEN 'Left Outside'
-            WHEN plate_x > 0.85 THEN 'Right Outside'
+            WHEN plate_x < -0.85 THEN 'Right Outside'
+            WHEN plate_x > 0.85 THEN 'Left Outside'
             ELSE 'In Zone'
         END AS pitch_location
 
@@ -423,9 +428,12 @@ ORDER BY whiff_rate_pct DESC NULLS LAST;
 WITH below_zone AS (
     SELECT *
     FROM ben_rice_pitches
-    WHERE plate_z < sz_bot
-      AND plate_x IS NOT NULL
-      AND sz_top > sz_bot
+    WHERE plate_z IS NOT NULL
+        AND plate_x IS NOT NULL
+        AND sz_top IS NOT NULL
+        AND sz_bot IS NOT NULL
+        AND sz_top > sz_bot
+        AND plate_z < sz_bot
 ),
 
 pitch_summary AS (
@@ -516,6 +524,7 @@ pitch_summary AS (
         ) AS whiffs
 
     FROM below_zone
+    WHERE p_throws IN ('L', 'R')
     GROUP BY p_throws, pitch_name
 )
 
@@ -578,8 +587,9 @@ WITH pitch_summary AS (
     FROM ben_rice_pitches
 
     WHERE plate_z < sz_bot
-      AND plate_x IS NOT NULL
-      AND sz_top > sz_bot
+        AND plate_x IS NOT NULL
+        AND sz_top > sz_bot
+        AND strikes IN (0, 1, 2)
 
     GROUP BY strike_count_group, pitch_name
 )
@@ -616,7 +626,7 @@ ORDER BY
 SELECT
     pitch_name,
 
-    COUNT(*) AS balls_in_play,
+    COUNT(*) AS contact_samples,
 
     ROUND(
         AVG(launch_speed)::numeric,
@@ -672,7 +682,7 @@ WITH in_zone_contact AS (
 SELECT
     vertical_zone,
 
-    COUNT(*) AS balls_in_play,
+    COUNT(*) AS contact_samples,
 
     ROUND(
         AVG(launch_speed)::numeric,

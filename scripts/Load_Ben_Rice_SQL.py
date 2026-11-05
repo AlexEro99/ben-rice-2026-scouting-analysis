@@ -1,19 +1,16 @@
-import pandas as pd
-from sqlalchemy import create_engine
-from getpass import getpass
 from pathlib import Path
+from getpass import getpass
+import pandas as pd
+from sqlalchemy import create_engine, inspect, text
 
-# Locate the main project folder
+# Locate the project and dataset
 PROJECT_DIR = Path(__file__).resolve().parent.parent
+CSV_PATH = PROJECT_DIR / "data" / "ben_rice_2026_statcast.csv"
 
-# Locate the Statcast CSV
-csv_path = PROJECT_DIR / "data" / "ben_rice_2026_statcast.csv"
+TABLE_NAME = "ben_rice_pitches"
 
-# Load the CSV
-df = pd.read_csv(csv_path)
-
-# Select columns matching our SQL table
-columns = [
+# Columns used in the SQL analysis
+COLUMNS = [
     "game_date",
     "game_pk",
     "at_bat_number",
@@ -31,12 +28,42 @@ columns = [
     "balls",
     "strikes",
     "launch_speed",
-    "estimated_woba_using_speedangle"
+    "estimated_woba_using_speedangle",
 ]
 
-df = df[columns].copy()
+# Check whether the dataset exists
+if not CSV_PATH.is_file():
+    raise FileNotFoundError(
+        f"Dataset not found: {CSV_PATH}\n"
+        "Run Ben_Rice.py first to download the data."
+    )
 
-# Connect to PostgreSQL securely
+# Read the dataset
+df = pd.read_csv(CSV_PATH)
+
+# Validate required columns
+missing_columns = [
+    col for col in COLUMNS
+    if col not in df.columns
+]
+
+if missing_columns:
+    raise ValueError(
+        f"Missing columns in CSV: {missing_columns}"
+    )
+
+df = df[COLUMNS].copy()
+
+if df.empty:
+    raise ValueError("The Statcast dataset is empty.")
+
+# Convert date to the appropriate type
+df["game_date"] = pd.to_datetime(
+    df["game_date"],
+    errors="raise"
+).dt.date
+
+# Request PostgreSQL credentials
 password = getpass("Enter PostgreSQL password: ")
 
 engine = create_engine(
@@ -46,34 +73,58 @@ engine = create_engine(
         "port": 5432,
         "dbname": "baseball_analytics",
         "user": "postgres",
-        "password": password
-    }
+        "password": password,
+    },
 )
 
-# Check whether the database already contains data
-with engine.connect() as connection:
-    from sqlalchemy import text
+try:
+    # Check whether the table exists
+    table_exists = inspect(engine).has_table(TABLE_NAME)
 
-    existing_rows = connection.execute(
-        text("SELECT COUNT(*) FROM ben_rice_pitches")
-    ).scalar()
+    if not table_exists:
+        # Create the table using the DataFrame schema
+        df.to_sql(
+            TABLE_NAME,
+            engine,
+            if_exists="fail",
+            index=False,
+            chunksize=1000,
+        )
 
-# Import only if the table is empty
-if existing_rows == 0:
-    df.to_sql(
-        "ben_rice_pitches",
-        engine,
-        if_exists="append",
-        index=False,
-        chunksize=1000
-    )
+        print(
+            f"Created {TABLE_NAME} and "
+            f"imported {len(df):,} pitches."
+        )
 
-    print(f"Successfully imported {len(df)} pitches!")
+    else:
+        # Check existing records
+        with engine.connect() as connection:
+            existing_rows = connection.execute(
+                text(
+                    "SELECT COUNT(*) "
+                    "FROM ben_rice_pitches"
+                )
+            ).scalar_one()
 
-else:
-    print(
-        f"Import skipped: database already contains "
-        f"{existing_rows} pitches."
-    )
+        if existing_rows == 0:
+            df.to_sql(
+                TABLE_NAME,
+                engine,
+                if_exists="append",
+                index=False,
+                chunksize=1000,
+            )
 
-engine.dispose()
+            print(
+                f"Imported {len(df):,} pitches "
+                f"into the existing table."
+            )
+
+        else:
+            print(
+                f"Import skipped: {TABLE_NAME} "
+                f"already contains {existing_rows:,} pitches."
+            )
+
+finally:
+    engine.dispose()
