@@ -370,5 +370,4 @@ This is an exploratory scouting analysis based on one season of pitch-level data
 
 Some pitch-type and matchup comparisons contain small samples. Contact-value metrics describe balls put in play rather than overall offensive production, and strike-zone boundaries are approximations.
 
->>>>>>> origin/main
 Observed differences should not be interpreted as causal effects or guarantees of future pitch effectiveness. Results may also be influenced by pitcher quality, pitch sequencing, count, and game situation.
