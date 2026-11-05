@@ -1,6 +1,14 @@
+<<<<<<< HEAD
 pybaseball
 pandas
 numpy
 matplotlib
 SQLAlchemy
+=======
+pybaseball
+pandas
+numpy
+matplotlib
+SQLAlchemy
+>>>>>>> origin/main
 psycopg2-binary
