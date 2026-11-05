@@ -5,8 +5,10 @@
 -- Table: ben_rice_pitches
 -- =====================================================
 
+-- =====================================================
 -- SECTION 1: DATASET VALIDATION
 -- Confirm pitch totals, games, and pitch types.
+-- =====================================================
 
 SELECT
     COUNT(*) AS total_pitches,
@@ -14,10 +16,11 @@ SELECT
     COUNT(DISTINCT pitch_name) AS pitch_types
 FROM ben_rice_pitches;
 
-
+-- =====================================================
 -- SECTION 2: OVERALL SWING AND WHIFF PERFORMANCE
 -- Whiff rate = whiffs / swings * 100
 -- Foul tips are included as whiffs in this analysis.
+-- =====================================================
 
 SELECT
     COUNT(*) AS total_pitches,
@@ -64,10 +67,11 @@ SELECT
 
 FROM ben_rice_pitches;
 
-
+-- =====================================================
 -- SECTION 3: WHIFF RATE BY PITCH TYPE
 -- Identify which pitch types generate the most
 -- swings and misses against Ben Rice.
+-- =====================================================
 
 SELECT
     pitch_name,
