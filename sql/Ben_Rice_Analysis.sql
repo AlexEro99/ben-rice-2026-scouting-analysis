@@ -1,4 +1,3 @@
-
 -- =====================================================
 -- BEN RICE | 2026 MLB STATCAST SCOUTING ANALYSIS
 -- Database: baseball_analytics
