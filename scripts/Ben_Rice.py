@@ -1,4 +1,3 @@
-
 from pybaseball import statcast_batter
 import pandas as pd
 import matplotlib.pyplot as plt
