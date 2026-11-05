@@ -1,0 +1,6 @@
+pybaseball
+pandas
+numpy
+matplotlib
+SQLAlchemy
+psycopg2-binary
