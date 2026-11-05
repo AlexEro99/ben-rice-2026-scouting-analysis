@@ -65,7 +65,7 @@ Python and Matplotlib were used to create the visualizations.
 
 ## Project Deliverables
 
-- [Advance Scouting Report (PDF)](reports/Ben_Rice_2026_Advance_Scouting_Report.pdf)
+- [Advance Scouting Report (PDF)](reports/Ben_Rice_Scouting_Report.pdf)
 - [In-Zone Whiff Heatmap](outputs/ben_rice_whiff_heatmap.png)
 - [Strike-Zone Comparison](outputs/ben_rice_zone_comparison.png)
 - [Pitch Types Faced](outputs/ben_rice_pitch_types.png)
