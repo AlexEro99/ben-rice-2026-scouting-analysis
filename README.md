@@ -6,11 +6,23 @@ This project uses MLB Statcast pitch-level data to analyze Ben Rice's swing-and-
 
 The objective is to translate baseball data into actionable insights that could support advance scouting and pitcher game planning.
 
-## Scouting Visualization
+## Scouting Visualizations
+
+### In-Zone Whiff Rate
 
 ![Ben Rice 2026 In-Zone Whiff Rate](outputs/ben_rice_whiff_heatmap.png)
 
-*In-zone whiff rate by approximate strike-zone location, displayed from the catcher's perspective.*
+*In-zone whiff rate by approximate strike-zone location, displayed from the catcher's perspective. Whiff rate is calculated as whiffs divided by swings.*
+
+### Out-of-Zone Whiff Rate
+
+![Ben Rice 2026 Out-of-Zone Whiff Rate](outputs/ben_rice_outside_zone_whiff_heatmap.png)
+
+*Out-of-zone whiff rate by location, displayed from the catcher's perspective. Above- and below-zone regions include pitches outside the horizontal strike-zone boundaries.*
+
+Pitches below the strike zone generated the highest out-of-zone whiff rate at **54.50% (109 whiffs / 200 swings)**. This supports exploring breaking pitches below the zone as part of a preliminary pitching plan.
+
+These visualizations are descriptive and should be interpreted alongside pitch type, count, and sample size.
 
 ## Tools & Technologies
 
